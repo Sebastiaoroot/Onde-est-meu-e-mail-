@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Onde Está Meu E-mail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background:"brown";
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .site {
+      background: #fff;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .buttons {
+      margin-top: 8px;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      margin-right: 10px;
+      padding: 8px 14px;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .btn-remove {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .btn-remove:hover {
+      background-color: #c0392b;
+    }
+    .btn-delete {
+      background-color: #3498db;
+      color:white;
+    }
+    .btn-delete:hover {
+      background-color: #2980b9;
+    }
+    #buscas {
+      margin-top: 20px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    #buscas h3 {
+      margin-top: 0;
+    }
+    #buscas button {
+      margin: 5px 5px 5px 0;
+      padding: 6px 10px;
+      font-size: 14px;
+      background: #2ecc71;
+      color: white;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    #buscas button:hover {
+      background: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <background-color"brown"></background-color>
+
+<h2>Onde Está Meu E-mail</h2>
+
+<input type="email" id="email" placeholder="Digite seu e-mail" />
+<button onclick="buscar()">Buscar</button>
+
+<div id="resultado"></div>
+
+<div id="buscas">
+  <h3>Buscas recentes:</h3>
+  <div id="listaBuscas"></div>
+</div>
+
+<script>
+  const resultado = document.getElementById('resultado');
+  const listaBuscas = document.getElementById('listaBuscas');
+
+  function validarEmail(email) {
+    const regex = /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/;
+    return regex.test(email);
+  }
+
+  function buscar(emailParam) {
+    let email = emailParam || document.getElementById('email').value.trim();
+    if (!validarEmail(email)) {
+      alert('Por favor, digite um e-mail válido.');
+      return;
+    }
+
+    resultado.innerHTML = `<p>Procurando por <strong>${email}</strong>...</p>`;
+
+    // Salvar busca
+    salvarBusca(email);
+
+    setTimeout(() => {
+      // Simula busca - aqui você pode colocar uma API real depois
+      const sites = (email === 'teste@exemplo.com')
+        ? []
+        : [
+          "https://facebook.com",
+          "https://instagram.com",
+          "https://linkedin.com",
+          "https://snapchat.com"
+        ];
+
+      if (sites.length === 0) {
+        resultado.innerHTML = `<p>Nenhum site encontrado para <strong>${email}</strong>.</p>`;
+      } else {
+        resultado.innerHTML = '';
+        sites.forEach(site => {
+          resultado.innerHTML += `
+            <div class="site">
+              <strong>${site}</strong>
+              <div class="buttons">
+                <button class="btn-remove" onclick="alert('Remover e-mail de ${site}')">Remover E-mail</button>
+                <button class="btn-delete" onclick="alert('Eliminar conta de ${site}')">Eliminar Conta</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+    }, 1500);
+  }
+
+  // Salva e exibe as buscas recentes
+  function salvarBusca(email) {
+    let buscas = JSON.parse(localStorage.getItem('buscas')) || [];
+    if (!buscas.includes(email)) {
+      buscas.unshift(email);
+      if (buscas.length > 5) buscas.pop();
+      localStorage.setItem('buscas', JSON.stringify(buscas));
+      atualizarListaBuscas();
+    }
+  }
+
+  function atualizarListaBuscas() {
+    let buscas = JSON.parse(localStorage.getItem('buscas')) || [];
+    listaBuscas.innerHTML = '';
+    buscas.forEach(email => {
+      listaBuscas.innerHTML += `<button onclick="buscar('${email}')">${email}</button>`;
+    });
+  }
+
+  // Carregar buscas ao iniciar
+  atualizarListaBuscas();
+
+</script>
+
+</body>
+</html>
